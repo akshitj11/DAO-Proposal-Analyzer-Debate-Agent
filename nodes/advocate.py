@@ -3,6 +3,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from state import state
 from dotenv import load_dotenv
 import os
+load_dotenv()
 model = ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=os.getenv("GOOGLE_API_KEY"))
 
 prompt = ChatPromptTemplate.from_messages([
