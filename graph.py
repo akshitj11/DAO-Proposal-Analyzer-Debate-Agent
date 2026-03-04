@@ -11,7 +11,7 @@ graph.add_node("advocate", advocate_node)
 graph.add_node("critic", critic_node)
 graph.add_node("judge", judge_node)
 
-graph.add_edges("advocate","critic")
+graph.add_edge("advocate","critic")
 graph.add_edge("critic","judge")
 
 def should_loop(state:State):
