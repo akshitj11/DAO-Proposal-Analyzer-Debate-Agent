@@ -1,12 +1,11 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from state import State
 from dotenv import load_dotenv
 import os
 load_dotenv()
 
-model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=os.getenv("GOOGLE_API_KEY"))
-
+model = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
 prompt = ChatPromptTemplate.from_messages([
     ("system", """You are an impartial judge evaluating a DAO governance debate. 
 You will be given arguments for and against a proposal. 
@@ -21,14 +20,15 @@ def judge_node(state:State):
     response = chain.invoke({
         "advocate_argument":state["advocate_argument"],
         "critic_argument":state["critic_argument"]})
-      #parsing the output
 
+    # parsing the output
     lines = response.content.strip().split("\n")
-    verdict = lines[0].replace("Verdict:","").strip()
-    confidence = int(lines[1].replace("Confidence","").strip())
+    verdict = lines[0].replace("Verdict:", "").strip()
+    confidence_str = lines[1].replace("Confidence:", "").strip()
+    confidence = int(''.join(filter(str.isdigit, confidence_str)))
 
     return {
-    "verdict":verdict,
-    "confidence":confidence,
-    "round":state["round"]+1
-     }
+        "verdict": verdict,
+        "confidence": confidence,
+        "round": state["round"] + 1
+    }
